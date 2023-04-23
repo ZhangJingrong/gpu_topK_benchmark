@@ -1,0 +1,68 @@
+--- DrTopKSC/baseline+filter+beta+shuffle/radixselect.cuh	2023-04-19 00:01:39.058759000 -0700
++++ DrTopKSC_new/baseline+filter+beta+shuffle/radixselect.cuh	2023-04-19 00:00:00.416741000 -0700
+@@ -8,0 +9 @@
++#include <cuda/std/limits>
+@@ -11,0 +13,3 @@
++
++namespace drtopk_radix {
++
+@@ -22,2 +25,0 @@ static void HandleError( cudaError_t err, const char *file, int line   ) {
+-		printf( "\n%s in %s at line %d\n", \
+-				cudaGetErrorString( err   ), file, line );
+@@ -29,0 +32,22 @@ static void HandleError( cudaError_t err, const char *file, int line   ) {
++ template <typename T>
++    __forceinline__  __host__ __device__ unsigned int get_bits(T f);
++
++template<>
++    __forceinline__  __host__ __device__  unsigned int get_bits(float f)
++    {
++
++        unsigned int mask;
++		unsigned int * f_ptr=reinterpret_cast<unsigned int*>(&f);
++		unsigned int u_f= *f_ptr;
++        //memcpy(&u_f, &f, sizeof(u_f));
++        mask = -int(u_f >> 31) | 0x80000000;
++        u_f ^= mask;
++        return u_f;
++    }
++
++template<>
++__forceinline__  __host__ __device__ unsigned int get_bits(unsigned int f)
++{
++    return f;
++}
++
+@@ -192 +216,2 @@ void Max_Min(data_t& max,data_t& min,data_t* vec_d,index_t num_element)
+-void CumulateCount_inplace(index_t* Count,index_t* CumCount,index_t num_bucket,index_t& Kdigit,index_t k,index_t num_element,index_t Belowcount,data_t& flag, int NBitsperDigit,int Currentdigit)
++void CumulateCount_inplace(index_t* Count,index_t* CumCount,index_t num_bucket,index_t& Kdigit,index_t k,index_t num_element,
++index_t Belowcount,unsigned int & flag, int NBitsperDigit,int Currentdigit)
+@@ -206 +231 @@ void CumulateCount_inplace(index_t* Count,index_t* CumCount,index_t num_bucket,i
+-				flag=flag|((data_t)i<<shiftleft);
++				flag=flag|((unsigned int)i<<shiftleft);
+@@ -215 +240 @@ void CumulateCount_inplace(index_t* Count,index_t* CumCount,index_t num_bucket,i
+-				flag=flag|((data_t)i<<shiftleft);
++				flag=flag|((unsigned int)i<<shiftleft);
+@@ -352,2 +377,3 @@ __global__ void AssignMaxMin(data_t* vec_d,index_t num_element,index_t* Count_d,
+-	template<typename data_t, typename index_t>
+-__global__ void CalculateOccurence_inplace(data_t* vec,index_t num_element,index_t* Count,int NBitsperDigit,int CurrentDigit,int num_bucket,data_t flag, int shiftleft,int shiftRight)
++template<typename data_t, typename index_t>
++__global__ void CalculateOccurence_inplace(const data_t* vec, data_t* out, int k, index_t num_element,index_t* Count,int NBitsperDigit,
++int CurrentDigit,int num_bucket, unsigned int flag, int shiftleft,int shiftRight)
+@@ -363 +389 @@ __global__ void CalculateOccurence_inplace(data_t* vec,index_t num_element,index
+-	data_t mask=num_bucket-1;
++	unsigned int mask=num_bucket-1;
+@@ -366,1 +392,1 @@ __global__ void CalculateOccurence_inplace(data_t* vec,index_t num_element,index
+-		data_t value=vec[mybegin];
++		unsigned int value=get_bits(vec[mybegin]);
+@@ -369 +396 @@ __global__ void CalculateOccurence_inplace(data_t* vec,index_t num_element,index
+-			data_t temp=value>>shiftRight;
++			unsigned int temp=value>>shiftRight;
+@@ -379,0 +407,6 @@ __global__ void CalculateOccurence_inplace(data_t* vec,index_t num_element,index
++
++	if(CurrentDigit==0){
++		for(int i=blockIdx.x*blockDim.x+threadIdx.x; i<k;i+=blockDim.x*gridDim.x){
++			out[i]=cuda::std::numeric_limits<data_t>::max();
++		}
++	}
+@@ -1894,0 +1928 @@ void sample_radix_select(data_t* vec_d,index_t num_element,index_t k,index_t num
++}  // namespace drtopk_radix
