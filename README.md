@@ -66,6 +66,8 @@ $ ./benchmark -c -w 20 -n 100 cub 1 1e6 20
 ```
 
 # Please cite as:
+
+```
 @inproceedings{zhang2023parallel,
   title={Parallel top-k algorithms on gpu: A comprehensive study and new methods},
   author={Zhang, Jingrong and Naruse, Akira and Li, Xipeng and Wang, Yong},
@@ -73,6 +75,7 @@ $ ./benchmark -c -w 20 -n 100 cub 1 1e6 20
   pages={1--13},
   year={2023}
 }
+```
 
 # One more thing:
 We are still working on topK related projects. While due to our limited bandwidth, I am unable to continue maintaining this repository with the updates of RAFT. 
