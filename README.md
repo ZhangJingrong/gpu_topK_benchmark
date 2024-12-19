@@ -78,5 +78,6 @@ $ ./benchmark -c -w 20 -n 100 cub 1 1e6 20
 ```
 
 # One more thing:
-We are still working on topK related projects. While due to our limited bandwidth, I am unable to continue maintaining this repository with the updates of RAFT. 
-If you have any related requirements, please feel free to reach me via email **christinaz@nvidia.com**
+We are still working on topK related projects. While due to our limited bandwidth, I am unable to continue maintaining this repository with the updates of RAFT.   
+
+If you have any related requirements, please feel free to reach me via email **christinaz@nvidia.com**. I will try my best to response.
