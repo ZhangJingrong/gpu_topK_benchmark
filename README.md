@@ -59,7 +59,21 @@ Run `./benchmark` without any argument to see the usage and available algorithms
 
 Use `-c` to check correctness. Use `-n` with a large number (e.g. `-n 100`) to get more stable benchmark results. Use `-w` to set the number of warmup runs.
 
+
 For example, to run algorithm CUB for batch_size=1, len=1e6, k=20 (note that exponential form is acceptable for batch/len/k):
 ```bash
 $ ./benchmark -c -w 20 -n 100 cub 1 1e6 20
 ```
+
+# Please cite as:
+@inproceedings{zhang2023parallel,
+  title={Parallel top-k algorithms on gpu: A comprehensive study and new methods},
+  author={Zhang, Jingrong and Naruse, Akira and Li, Xipeng and Wang, Yong},
+  booktitle={Proceedings of the International Conference for High Performance Computing, Networking, Storage and Analysis},
+  pages={1--13},
+  year={2023}
+}
+
+# One more thing:
+We are still working on topK related projects. While due to our limited bandwidth, I am unable to continue maintaining this repository with the updates of RAFT. 
+If you have any related requirements, please feel free to reach me via email **christinaz@nvidia.com**
